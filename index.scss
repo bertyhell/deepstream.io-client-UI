@@ -1,0 +1,75 @@
+html,
+body {
+  border: 0;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.server-url-input {
+  height: 40px;
+  padding-left: 11px;
+  width: calc(100vw - 200px);
+  box-sizing: border-box;
+  border: 0;
+}
+
+.connect-btn {
+  height: 40px;
+  width: 200px;
+}
+
+.records {
+  background-color: #ddd;
+  box-sizing: border-box;
+  display: block;
+  float: left;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+
+  li {
+    background-color: #999;
+    border: 1px solid #777;
+    border-width: 0 0 1px 0;
+    cursor: pointer;
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    list-style: none;
+    overflow: hidden;
+    padding-left: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    z-index: 1;
+
+    &:hover {
+      background-color: #777;
+    }
+
+    .delete-btn {
+      background-color: darkred;
+      color: white;
+      display: block;
+      float: right;
+      line-height: 40px;
+      text-align: center;
+      width: 39px;
+    }
+  }
+}
+
+.record-value {
+  box-sizing: border-box;
+  float: right;
+  height: 100vh;
+  padding: 20px;
+  width: calc(100vw - 200px);
+}
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: 100vh;
+}
+
