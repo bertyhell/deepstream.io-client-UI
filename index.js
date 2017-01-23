@@ -7,51 +7,97 @@ function require(moduleName) {
     }
 }
 var $ = require("jquery");
-var editor;
+var existingRecordValueEditor;
+var newRecordValueEditor;
 var isFirst = true;
+var client;
+var $serverUrlInput;
+var $connectBtn;
+var $records;
+var $recordValue;
+var $newRecordLabelInput;
+var $newRecordValueInput;
+var $insertBtn;
+var lastSubscribedMatch;
+var lastSubscribedRecord;
 $(function () {
-    var $serverUrlInput = $('.server-url-input');
-    var $connectBtn = $('.connect-btn');
-    var $records = $('.records');
-    var $recordValue = $('.record-value');
-    var subscribedRecords = {};
-    editor = CodeMirror.fromTextArea($recordValue[0], {
+    $serverUrlInput = $('.server-url-input');
+    $connectBtn = $('#connectBtn');
+    $records = $('.records');
+    $recordValue = $('.record-value');
+    $newRecordLabelInput = $('#newRecordLabelInput');
+    $newRecordValueInput = $('#newRecordValueInput');
+    $insertBtn = $('#insertBtn');
+    existingRecordValueEditor = CodeMirror.fromTextArea($recordValue[0], {
+        lineNumbers: true,
+        mode: 'javascript'
+    });
+    newRecordValueEditor = CodeMirror.fromTextArea($newRecordValueInput[0], {
         lineNumbers: true,
         mode: 'javascript'
     });
     $connectBtn.on('click', function () {
         var serverUrl = $serverUrlInput.val();
-        var client = deepstream(serverUrl).login();
-        client.record.listen('.*', function (match, isSubscribed, response) {
-            var $recordLabel = $('<li>' + match + '</li>');
-            $recordLabel.on('click', function (evt) {
-                evt.stopPropagation();
-                var record = client.record.getRecord(match);
-                record.whenReady(function () {
-                    setRecordValue(record.get());
-                });
-                record.subscribe(setRecordValue);
-                if (subscribedRecords[match]) {
-                    subscribedRecords[match].unsubscribe();
-                }
-                subscribedRecords[match] = record;
-            });
-            var $deleteButton = $('<i class="fa fa-times delete-btn" title="Delete record"></i>');
-            $deleteButton.on('click', function () {
-                client.record.getRecord(match).delete();
-                subscribedRecords[match].unsubscribe();
-                $recordLabel.remove();
-            });
-            $recordLabel.append($deleteButton);
-            $records.append($recordLabel);
-            if (isFirst) {
-                isFirst = false;
-                $recordLabel.trigger('click');
-            }
+        client = deepstream(serverUrl).login({}, function () {
+            startListening();
         });
     });
 });
+function startListening() {
+    client.record.listen('.*', function (match, isSubscribed, response) {
+        console.log('match: ', match, 'isSubscribed: ', isSubscribed, 'response: ', response);
+        if ($('[data="' + match + '"]').length) {
+            return;
+        }
+        var $recordLabel = $('<li>' + match + '</li>');
+        $recordLabel.data('match', match);
+        $recordLabel.on('click', function (evt) {
+            evt.stopPropagation();
+            if (lastSubscribedRecord) {
+                lastSubscribedRecord.unsubscribe();
+            }
+            lastSubscribedRecord = client.record.getRecord(match);
+            lastSubscribedMatch = match;
+            lastSubscribedRecord.whenReady(function () {
+                setRecordValue(lastSubscribedRecord.get());
+            });
+            lastSubscribedRecord.subscribe(setRecordValue);
+        });
+        var $deleteButton = $('<i class="fa fa-times delete-btn" title="Delete record"></i>');
+        $deleteButton.on('click', function () {
+            client.record.getRecord(match).delete();
+            if (lastSubscribedRecord && lastSubscribedMatch === match) {
+                lastSubscribedRecord.unsubscribe();
+                lastSubscribedRecord = null;
+                lastSubscribedMatch = null;
+            }
+            $recordLabel.remove();
+        });
+        $recordLabel.append($deleteButton);
+        $records.append($recordLabel);
+        if (isFirst) {
+            isFirst = false;
+            $recordLabel.trigger('click');
+        }
+    });
+    $insertBtn.on('click', function () {
+        var recordLabel = $newRecordLabelInput.val();
+        var recordValue;
+        try {
+            recordValue = JSON.parse($newRecordValueInput.val());
+        }
+        catch (err) {
+            console.error('Failed to parse the json for the new record: ', err);
+        }
+        if (recordLabel) {
+            var newRecord_1 = client.record.getRecord($newRecordLabelInput.val());
+            newRecord_1.whenReady(function () {
+                newRecord_1.set(recordValue);
+            });
+        }
+    });
+}
 function setRecordValue(value) {
-    editor.getDoc().setValue(JSON.stringify(value, null, '\t'));
+    existingRecordValueEditor.getDoc().setValue(JSON.stringify(value, null, '\t'));
 }
 //# sourceMappingURL=index.js.map

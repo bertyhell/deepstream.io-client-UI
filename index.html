@@ -19,7 +19,8 @@
 </head>
 <body>
     <div>
-        <input class="server-url-input" type="text" placeholder="eg: wss://realtime.my-server.com"/><button class="connect-btn">Connect</button>
+        <input class="server-url-input" type="text" placeholder="eg: wss://realtime.my-server.com" autocomplete="autocomplete" />
+        <button class="connect-btn" id="connectBtn">Connect</button>
     </div>
     <ul class="records">
 
@@ -27,5 +28,15 @@
     <textarea class="record-value">
 
     </textarea>
+    <div class="new-record-section">
+        <input type="text" value="my-new-record-name" id="newRecordLabelInput" />
+        <textarea id="newRecordValueInput">
+{
+    "property1": "abc",
+    "property2": "def"
+}
+        </textarea>
+        <button id="insertBtn">Insert</button>
+    </div>
 </body>
 </html>

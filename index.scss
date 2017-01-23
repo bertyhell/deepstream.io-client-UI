@@ -6,17 +6,24 @@ body {
   padding: 0;
 }
 
-.server-url-input {
-  height: 40px;
-  padding-left: 11px;
-  width: calc(100vw - 200px);
+* {
   box-sizing: border-box;
-  border: 0;
 }
 
-.connect-btn {
+input {
+  border: 0;
   height: 40px;
-  width: 200px;
+  padding-left: 11px;
+}
+
+button {
+  height: 40px;
+  width: 199px;
+  float: right;
+}
+
+.server-url-input {
+  width: calc(100vw - 200px);
 }
 
 .records {
@@ -24,7 +31,7 @@ body {
   box-sizing: border-box;
   display: block;
   float: left;
-  height: 100vh;
+  height: calc(100vh - 40px - 100px);
   margin: 0;
   padding: 0;
   width: 200px;
@@ -61,15 +68,37 @@ body {
 }
 
 .record-value {
-  box-sizing: border-box;
   float: right;
-  height: 100vh;
+  height: calc(100vh - 40px - 100px);
   padding: 20px;
   width: calc(100vw - 200px);
 }
 
 .CodeMirror {
   border: 1px solid #eee;
-  height: 100vh;
+  height: calc(100vh - 40px - 100px);
+}
+
+.new-record-section {
+  height: 100px;
+
+  input {
+    border: 1px #ddd solid;
+    height: 100%;
+    float: left;
+    width: 200px;
+  }
+
+  textarea,
+  .CodeMirror {
+    width: calc(100vw - 200px - 200px);
+    float: left;
+    height: 100px;
+  }
+
+  button {
+    height: 100px;
+    float: right;
+  }
 }
 
