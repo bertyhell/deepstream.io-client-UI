@@ -61,12 +61,12 @@ $(function() {
 function startListening() {
   client.record.listen('.*', (match: string, isSubscribed: boolean, response: any) => {
     console.log('match: ', match, 'isSubscribed: ', isSubscribed, 'response: ', response);
-    if ($('[data="' + match + '"]').length) {
+    if ($('[data-match="' + match + '"]').length) {
       // already added
       return;
     }
     let $recordLabel = $('<li>' + match + '</li>');
-    $recordLabel.data('match', match);
+    $recordLabel.attr('data-match', match);
 
     // Select record
     $recordLabel.on('click', (evt: JQueryEventObject) => {

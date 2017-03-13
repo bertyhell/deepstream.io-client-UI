@@ -46,11 +46,11 @@ $(function () {
 function startListening() {
     client.record.listen('.*', function (match, isSubscribed, response) {
         console.log('match: ', match, 'isSubscribed: ', isSubscribed, 'response: ', response);
-        if ($('[data="' + match + '"]').length) {
+        if ($('[data-match="' + match + '"]').length) {
             return;
         }
         var $recordLabel = $('<li>' + match + '</li>');
-        $recordLabel.data('match', match);
+        $recordLabel.attr('data-match', match);
         $recordLabel.on('click', function (evt) {
             evt.stopPropagation();
             if (lastSubscribedRecord) {
